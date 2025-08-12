@@ -16,7 +16,7 @@ func main() {
 		return
 	}
 
-	mustSuccess(exec.Command("git", "gone"))
+	stashErr := ignoreError(exec.Command("git", "gone"))
 
 	currentBranchName, err := getCurrentBranchName()
 	if err != nil {
@@ -40,17 +40,21 @@ func main() {
 	mustSuccess(exec.Command("git", "push", "-u", "origin", "kdy1/"+branchName))
 
 	// Pop the stash
-	mustSuccess(exec.Command("git", "stash", "pop"))
+	if stashErr == nil {
+		mustSuccess(exec.Command("git", "stash", "pop"))
+	}
 }
 
-func ignoreError(cmd *exec.Cmd) {
+func ignoreError(cmd *exec.Cmd) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
 	err := cmd.Run()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error running command: %s\n%v\n", cmd.String(), err)
+		return err
 	}
+	return nil
 }
 
 func mustSuccess(cmd *exec.Cmd) {
