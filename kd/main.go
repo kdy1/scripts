@@ -16,7 +16,7 @@ func main() {
 		return
 	}
 
-	exec.Command("git", "gone").Run()
+	mustSuccess(exec.Command("git", "gone"))
 
 	currentBranchName, err := getCurrentBranchName()
 	if err != nil {
@@ -24,16 +24,44 @@ func main() {
 		return
 	}
 
+	// Stash all changes
+	mustSuccess(exec.Command("git", "stash", "save", "kd-stash"))
+
 	if currentBranchName == defaultBranchName {
-		exec.Command("git", "pull", "origin", defaultBranchName).Run()
+		mustSuccess(exec.Command("git", "pull"))
 	} else {
-		exec.Command("git", "fetch", "origin", defaultBranchName+":"+defaultBranchName).Run()
+		mustSuccess(exec.Command("git", "fetch", "origin", defaultBranchName+":"+defaultBranchName))
 	}
 
-	exec.Command("git", "checkout", defaultBranchName).Run()
-	exec.Command("git", "branch", "-D", "kdy1/"+branchName).Run()
-	exec.Command("git", "checkout", "origin/"+defaultBranchName, "-b", "kdy1/"+branchName).Run()
-	exec.Command("git", "push", "-u", "origin", "kdy1/"+branchName).Run()
+	ignoreError(exec.Command("git", "checkout", defaultBranchName))
+	ignoreError(exec.Command("git", "branch", "-D", "kdy1/"+branchName))
+
+	mustSuccess(exec.Command("git", "checkout", "origin/"+defaultBranchName, "-b", "kdy1/"+branchName))
+	mustSuccess(exec.Command("git", "push", "-u", "origin", "kdy1/"+branchName))
+
+	// Pop the stash
+	mustSuccess(exec.Command("git", "stash", "pop"))
+}
+
+func ignoreError(cmd *exec.Cmd) {
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err := cmd.Run()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error running command: %s\n%v\n", cmd.String(), err)
+	}
+}
+
+func mustSuccess(cmd *exec.Cmd) {
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err := cmd.Run()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error running command: %s\n%v\n", cmd.String(), err)
+		os.Exit(1)
+	}
 }
 
 func getDefaultBranchName() (string, error) {
@@ -42,7 +70,7 @@ func getDefaultBranchName() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to get default branch name: %w", err)
 	}
-	return strings.TrimPrefix(string(output), "refs/remotes/origin/"), nil
+	return strings.TrimSpace(strings.TrimPrefix(string(output), "refs/remotes/origin/")), nil
 }
 
 func getCurrentBranchName() (string, error) {
@@ -50,5 +78,5 @@ func getCurrentBranchName() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to get current branch name: %w", err)
 	}
-	return string(output), nil
+	return strings.TrimSpace(string(output)), nil
 }
