@@ -19,6 +19,7 @@ func installTools() {
 	installDiscord()
 	installClaudeCode()
 	installFnm()
+	installRustup()
 }
 
 func installIterm2() {
@@ -57,6 +58,10 @@ func installClaudeCode() {
 
 func installFnm() {
 	maybe("Installing Fnm", exec.Command("brew", "install", "fnm"))
+}
+
+func installRustup() {
+	maybe("Installing Rustup", exec.Command("brew", "install", "rustup"))
 }
 
 func installOhMyZsh() {
