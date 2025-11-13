@@ -20,6 +20,7 @@ func installTools() {
 	installClaudeCode()
 	installFnm()
 	installRustup()
+	installGitAndGCM()
 }
 
 func installIterm2() {
