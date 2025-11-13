@@ -17,6 +17,7 @@ func installTools() {
 	installPodmanDesktop()
 	installObsidian()
 	installDiscord()
+	installClaudeCode()
 }
 
 func installIterm2() {
@@ -47,6 +48,10 @@ func installObsidian() {
 
 func installDiscord() {
 	maybe("Installing Discord", exec.Command("brew", "install", "--cask", "discord"))
+}
+
+func installClaudeCode() {
+	maybe("Installing Claude Code", exec.Command("brew", "install", "--cask", "claude-code"))
 }
 
 func installOhMyZsh() {
