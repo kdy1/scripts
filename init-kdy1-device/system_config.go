@@ -4,11 +4,19 @@ import "os/exec"
 
 func systemConfig() {
 	configureGit()
-	disableEmojiShortcut()
+	configureMacOS()
 }
 
-func disableEmojiShortcut() {
+func configureMacOS() {
 	maybe("Disabling Emoji Shortcut", exec.Command("defaults", "write", "-g", "NSUserKeyEquivalents", "-dict-add", "Emoji & Symbols", "\\0"))
+
+	// Enable dock autohide
+	maybe("Enabling dock autohide", exec.Command("defaults", "write", "com.apple.dock", "autohide", "-bool", "TRUE"))
+	// Disable recent items in dock
+	maybe("Disabling recent items in dock", exec.Command("defaults", "write", "com.apple.dock", "show-recents", "-bool", "FALSE"))
+
+	// restart dock
+	maybe("Restarting dock", exec.Command("killall", "Dock"))
 }
 
 func configureGit() {
