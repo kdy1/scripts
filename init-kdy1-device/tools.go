@@ -64,6 +64,12 @@ func installRustup() {
 	maybe("Installing Rustup", exec.Command("brew", "install", "rustup"))
 }
 
+func installGitAndGCM() {
+	maybe("Installing Git", exec.Command("brew", "install", "git"))
+
+	maybe("Installing GCM", exec.Command("brew", "install", "--cask", "git-credential-manager"))
+}
+
 func installOhMyZsh() {
 	omzDir := os.ExpandEnv("$HOME/.oh-my-zsh")
 	if _, err := os.Stat(omzDir); !os.IsNotExist(err) {
