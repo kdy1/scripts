@@ -10,7 +10,7 @@ func systemConfig() {
 func configureMacOS() {
 	maybe("Disabling Emoji Shortcut", exec.Command("defaults", "write", "-g", "NSUserKeyEquivalents", "-dict-add", "Emoji & Symbols", "\\0"))
 	// sudo defaults write /Library/Preferences/FeatureFlags/Domain/UIKit.plist emoji_enhancements -dict-add Enabled -bool NO
-	maybe("Disabling Emoji Enhancements", exec.Command("sudo", "defaults", "write", "/Library/Preferences/FeatureFlags/Domain/UIKit.plist", "emoji_enhancements", "-dict-add", "Enabled", "-bool", "NO"))
+	maybe("Disabling Emoji Enhancements", exec.Command("defaults", "write", "/Library/Preferences/FeatureFlags/Domain/UIKit.plist", "emoji_enhancements", "-dict-add", "Enabled", "-bool", "NO"))
 
 	// Enable dock autohide
 	maybe("Enabling dock autohide", exec.Command("defaults", "write", "com.apple.dock", "autohide", "-bool", "TRUE"))
