@@ -20,7 +20,7 @@ func installTools() {
 	installClaudeCode()
 	installFnm()
 	installRustup()
-	installGitAndGitCredentialManager()
+	installGitUtils()
 }
 
 func installIterm2() {
@@ -65,10 +65,12 @@ func installRustup() {
 	maybe("Installing Rustup", exec.Command("brew", "install", "rustup"))
 }
 
-func installGitAndGitCredentialManager() {
+func installGitUtils() {
 	maybe("Installing Git", exec.Command("brew", "install", "git"))
 
 	maybe("Installing Git Credential Manager", exec.Command("brew", "install", "--cask", "git-credential-manager"))
+
+	maybe("Install GitHub CLI", exec.Command("brew", "install", "gh"))
 }
 
 func installOhMyZsh() {
