@@ -30,4 +30,7 @@ func configureGit() {
 
 	// git config --global user.email "kdy.1997.dev@gmail.com"
 	maybe("Configuring Git user email", exec.Command("git", "config", "--global", "user.email", "kdy.1997.dev@gmail.com"))
+
+	// Use cursor as default editor
+	maybe("Configuring Git to use cursor as default editor", exec.Command("git", "config", "--global", "core.editor", "cursor", "--wait"))
 }
