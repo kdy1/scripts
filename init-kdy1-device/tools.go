@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -42,7 +44,48 @@ func installPodmanDesktop() {
 func installDuti() {
 	maybe("Installing Duti", exec.Command("brew", "install", "duti"))
 
-	// TODO: Set default editor as vscode for various file types
+	// Use cursor as default editor for various file types
+
+	// osascript -e 'id of app "Cursor"'
+	cursorAppId, err := getCursorAppId()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to get Cursor app ID: %v\n", err)
+		return
+	}
+	log.Println("Cursor app ID:", cursorAppId)
+
+	handleExt := func(ext string) {
+		maybe("Setting default editor for "+ext+" to Cursor", exec.Command("duti", "-s", cursorAppId, ext, "all"))
+	}
+
+	handleExt("html")
+	handleExt("css")
+	handleExt("js")
+	handleExt("mjs")
+	handleExt("cjs")
+	handleExt("ts")
+	handleExt("tsx")
+	handleExt("json")
+	handleExt("yaml")
+	handleExt("yml")
+	handleExt("toml")
+	handleExt("md")
+	handleExt("txt")
+
+	handleExt("go")
+	handleExt("rs")
+	handleExt("toml")
+	handleExt("md")
+	handleExt("txt")
+}
+
+func getCursorAppId() (string, error) {
+	cursorAppId := exec.Command("osascript", "-e", "'id of app \"Cursor\"'")
+	output, err := cursorAppId.Output()
+	if err != nil {
+		return "", fmt.Errorf("failed to get Cursor app ID: %w", err)
+	}
+	return strings.TrimSpace(string(output)), nil
 }
 
 func installObsidian() {
