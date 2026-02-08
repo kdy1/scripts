@@ -51,7 +51,7 @@ fi
 # Rebase onto latest origin/main using claude
 echo ""
 step "Rebasing onto ${CYAN}origin/main${RESET} via Claude..."
-claude -p 'Do git rebase origin/main' --allow-tools 'Bash,WebFetch,WebSearch'
+claude -p 'Do git rebase origin/main' --allowed-tools 'Bash,WebFetch,WebSearch'
 ok "Rebased"
 
 # Force push
